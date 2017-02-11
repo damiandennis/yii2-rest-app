@@ -18,7 +18,6 @@ DIRECTORY STRUCTURE
       commands/           contains console commands (controllers)
       config/             contains application configurations
       controllers/        contains Web controller classes
-      docker/             contains the build files to configure docker using fpm and nginx
       mail/               contains view files for e-mails
       models/             contains model classes
       modules/            contains api modules
