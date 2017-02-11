@@ -1,0 +1,14 @@
+version: '2'
+services:
+  php:
+    container_name: yii2-rest-app-php
+    image: damiandennis/yii2-rest-app-php:latest
+    volumes:
+      - ./:/var/www/html
+  nginx:
+    container_name: yii2-rest-app-nginx
+    image: damiandennis/yii2-rest-app-nginx:latest
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - 80:80
