@@ -1,13 +1,19 @@
 version: '2'
 services:
   php:
-    container_name: yii2-rest-app-php
-    image: damiandennis/yii2-rest-app-php:latest
+    build:
+      context: ./docker/php
+      args:
+        name: my-app-php
+    container_name: my-app-php
     volumes:
       - ./:/var/www/html
   nginx:
-    container_name: yii2-rest-app-nginx
-    image: damiandennis/yii2-rest-app-nginx:latest
+    build:
+      context: ./docker/nginx
+      args:
+        name: my-app-nginx
+    container_name: my-app-nginx
     volumes:
       - ./:/var/www/html
     ports:
