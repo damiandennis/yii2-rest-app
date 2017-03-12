@@ -136,7 +136,7 @@ class ModelGenController extends Controller
                 continue;
             }
 
-            $modelName = str_replace(' ', '', ucwords(str_replace(['tbl', '_'], [' '], $tbl)));
+            $modelName = Inflector::camelize(str_replace(['tbl_'], [''], $tbl));
 
             if ($modelName !== null) {
                 $this->stdout("generating {$modelName}Search for model {$modelName}..\n", Console::FG_GREEN);
