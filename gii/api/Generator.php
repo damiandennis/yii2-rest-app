@@ -98,7 +98,8 @@ class Generator extends \yii\gii\Generator
     public function requiredTemplates()
     {
         return [
-            'controller.php'
+            'controller.php',
+            'endpoints.php'
         ];
     }
 
@@ -145,6 +146,10 @@ class Generator extends \yii\gii\Generator
             $this->getControllerFile(),
             $this->render('controller.php', ['modelClass' => $this->modelClass, 'searchClass' => $this->searchClass])
         );
+        $files[] = new CodeFile(
+            $this->getEndpointFile(),
+            $this->render('endpoints.php', ['endpoints' => $this->getEndpoints()])
+        );
 
         return $files;
     }
@@ -155,6 +160,31 @@ class Generator extends \yii\gii\Generator
     public function getControllerFile()
     {
         return Yii::getAlias('@' . str_replace('\\', '/', $this->controllerClass)) . '.php';
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getEndpoints()
+    {
+        $endpoints = [];
+        if (file_exists($this->getEndpointFile())) {
+            $filePath = $this->getEndpointFile();
+            $endpoints = require($filePath);
+        }
+        $endpoint = str_replace(['\\', 'app/modules/', '/controllers'], ['/', '', ''], $this->getControllerNamespace()) . '/' . $this->getControllerID();
+        if (!in_array($endpoint, $endpoints)) {
+            $endpoints[] = $endpoint;
+        }
+        return $endpoints;
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getEndpointFile()
+    {
+        return Yii::getAlias("@app/config/endpoints.php");
     }
 
     /**

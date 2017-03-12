@@ -41,7 +41,7 @@ class ModelGenController extends Controller
                 continue;
             }
 
-            $modelName = str_replace(' ', '', ucwords(str_replace(['_'], [' '], $tbl)));
+            $modelName = Inflector::camelize(str_replace(['tbl_'], [''], $tbl));
 
             if ($modelName !== null) {
                 $this->stdout("generating {$modelName} for table {$tbl}..\n", Console::FG_GREEN);
@@ -70,8 +70,9 @@ class ModelGenController extends Controller
      * Generates child classes for all tables unless table is not null.
      *
      * @param null|string|array $table If not null then a single/array of model/s will be generated.
+     * @param string $apiVersion
      */
-    public function actionChildClasses($table = null)
+    public function actionChildClasses($table = null, $apiVersion='v1')
     {
         $connection = Yii::$app->db;//get connection
         $dbSchema = $connection->schema;
@@ -90,7 +91,7 @@ class ModelGenController extends Controller
                 continue;
             }
 
-            $modelName = str_replace(' ', '', ucwords(str_replace(['_'], [' '], $tbl)));
+            $modelName = Inflector::camelize(str_replace(['tbl_'], [''], $tbl));
 
             if ($modelName !== null) {
                 $baseClass = "app\\\\models\\\\{$modelName}";
@@ -99,7 +100,7 @@ class ModelGenController extends Controller
                 $command = dirname(__FILE__).'/../yii gii/child_model' .
                     " --tableName={$tbl}" .
                     " --modelClass={$modelName}" .
-                    " --ns=app\\\\modules\\\\api\\\\v1\\\\models" .
+                    " --ns=app\\\\modules\\\\api\\\\{$apiVersion}\\\\models" .
                     " --interactive=0" .
                     " --enableI18N=1" .
                     " --overwrite=1" .
@@ -117,7 +118,11 @@ class ModelGenController extends Controller
         }
     }
 
-    public function actionSearch($table = null)
+    /**
+     * @param null $table
+     * @param string $apiVersion
+     */
+    public function actionSearch($table = null, $apiVersion='v1')
     {
         $connection = Yii::$app->db;//get connection
         $dbSchema = $connection->schema;
@@ -142,7 +147,7 @@ class ModelGenController extends Controller
                 $this->stdout("generating {$modelName}Search for model {$modelName}..\n", Console::FG_GREEN);
 
                 $command = dirname(__FILE__).'/../yii gii/search' .
-                    ' --modelClass=app\\\\modules\\\\api\\\\v1\\\\models\\\\' . $modelName .
+                    " --modelClass=app\\\\modules\\\\api\\\\{$apiVersion}\\\\models\\\\" . $modelName .
                     ' --searchModelClass=app\\\\modules\\\\api\\\\v1\\\\models\\\\search\\\\' . $modelName . 'Search' .
                     ' --overwrite=1' .
                     ' --interactive=0';
@@ -158,7 +163,11 @@ class ModelGenController extends Controller
         }
     }
 
-    public function actionController($table = null)
+    /**
+     * @param null $table
+     * @param string $apiVersion
+     */
+    public function actionController($table = null, $apiVersion='v1')
     {
         $connection = Yii::$app->db;//get connection
         $dbSchema = $connection->schema;
@@ -177,15 +186,15 @@ class ModelGenController extends Controller
                 continue;
             }
 
-            $modelName = str_replace(' ', '', ucwords(str_replace(['tbl', '_'], [' '], $tbl)));
+            $modelName = Inflector::camelize(str_replace(['tbl_'], [''], $tbl));
 
             if ($modelName !== null) {
                 $this->stdout("generating {$modelName} Controller for model {$modelName}..\n", Console::FG_GREEN);
 
                 $command = dirname(__FILE__).'/../yii gii/api' .
-                    ' --controllerClass=app\\\\modules\\\\api\\\\v1\\\\controllers\\\\' . Inflector::pluralize($modelName) . 'Controller' .
-                    ' --modelClass=app\\\\modules\\\\api\\\\v1\\\\models\\\\' . $modelName .
-                    ' --searchClass=app\\\\modules\\\\api\\\\v1\\\\models\\\\search\\\\' . $modelName . 'Search' .
+                    " --controllerClass=app\\\\modules\\\\api\\\\{$apiVersion}\\\\controllers\\\\" . Inflector::pluralize($modelName) . 'Controller' .
+                    " --modelClass=app\\\\modules\\\\api\\\\{$apiVersion}\\\\models\\\\" . $modelName .
+                    " --searchClass=app\\\\modules\\\\api\\\\{$apiVersion}\\\\models\\\\search\\\\" . $modelName . 'Search' .
                     ' --overwrite=1' .
                     ' --interactive=0';
 
@@ -204,23 +213,25 @@ class ModelGenController extends Controller
     /**
      * Regenerates all models.
      * @param null $table
+     * @param string $apiVersion
      */
-    public function actionModel($table = null)
+    public function actionModel($table = null, $apiVersion='v1')
     {
         $this->actionIndex($table);
-        $this->actionChildClasses($table);
+        $this->actionChildClasses($table, $apiVersion);
     }
 
     /**
      * Generates base and child classes for all tables unless table is not null.
      *
      * @param null|string|array $table If not null then a single/array of model/s will be generated.
+     * @param string $apiVersion
      */
-    public function actionApi($table = null)
+    public function actionApi($table = null, $apiVersion='v1')
     {
         $this->actionIndex($table);
-        $this->actionChildClasses($table);
-        $this->actionSearch($table);
-        $this->actionController($table);
+        $this->actionChildClasses($table, $apiVersion);
+        $this->actionSearch($table, $apiVersion);
+        $this->actionController($table, $apiVersion);
     }
 }

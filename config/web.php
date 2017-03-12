@@ -1,6 +1,7 @@
 <?php
 
 $params = require(__DIR__ . '/params.php');
+$endpoints = require(__DIR__ . '/endpoints.php');
 
 $config = [
     'id' => 'basic',
@@ -53,7 +54,7 @@ $config = [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'pluralize' => false,
-                    'controller' => []
+                    'controller' => $endpoints
                 ]
             ],
         ]
