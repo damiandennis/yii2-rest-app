@@ -1,0 +1,21 @@
+version: '2'
+services:
+  php:
+    build:
+      context: ./php
+    container_name: my-app-php
+    volumes:
+      - ../../../:/var/www/html
+    environment:
+      - YII_ENV=dev
+  nginx:
+    build:
+      context: ./nginx
+      args:
+        SERVER_NAME: localhost
+        PHP_CONTAINER_NAME: my-app-php
+    container_name: my-app-nginx
+    volumes:
+      - ../../../:/var/www/html
+    ports:
+      - 80:80

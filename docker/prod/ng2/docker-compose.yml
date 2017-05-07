@@ -1,0 +1,30 @@
+version: '2'
+services:
+  php:
+    build:
+      context: ./php
+    container_name: my-app-php
+    environment:
+      - YII_ENV=prod
+    volumes:
+      - ../../../:/var/www/html
+  nodejs:
+    build:
+      context: ./nodejs
+    container_name: my-app-nodejs
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ../../../:/var/www/html
+  nginx:
+    build:
+      context: ./nginx
+      args:
+        SERVER_NAME: localhost
+        PHP_CONTAINER_NAME: my-app-php
+        NODEJS_CONTAINER_NAME: my-app-nodejs
+    container_name: my-app-nginx
+    volumes:
+      - ../../../:/var/www/html
+    ports:
+      - 80:80

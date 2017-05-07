@@ -1,0 +1,15 @@
+{
+  "name": "yii2-rest-app",
+  "version": "1.0.0",
+  "description": "for ngx install.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Damian Dennis <damiandennis@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2",
+    "path": "^0.12.7"
+  }
+}
